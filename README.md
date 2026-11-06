@@ -9,3 +9,7 @@ turn black. It looks cool but...
 ## EPILEPSY WARNING, 4 QUICK FLASHES AT THE END OF THE VIDEO STARTING AT 0:25
 
 The demonstration video is [here](https://youtu.be/VlG307DY8IE)
+
+## To test the project
+Spacebar to extend/unextend the Lightsaber
+Enter to cause an impact frame that lasts 15 Update() calls, then resets back to normal values.
