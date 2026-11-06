@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,11 +14,15 @@ public class LightsaberBladeScript : MonoBehaviour
     public float init_x; // initial x scale
     public float init_z; // initial z scale
 
+    int impactFrames = 15;
+    bool impacting = false;
+
     public GameObject blade;
     public Material bladeMaterial;
     
 
     InputAction jumpAction;
+    InputAction attackAction;
 
 
 
@@ -34,6 +39,7 @@ public class LightsaberBladeScript : MonoBehaviour
         state = true;
 
         jumpAction = InputSystem.actions.FindAction("Jump");
+        attackAction = InputSystem.actions.FindAction("Attack");
 
     }
 
@@ -41,10 +47,25 @@ public class LightsaberBladeScript : MonoBehaviour
     void Update()
     {
 
+        if (impactFrames <= 0)
+        {
+            bladeMaterial.SetFloat("_WobbleSpeed", 0.18f);
+            impacting = false;
+        }
+
+
         bool jumpValue = jumpAction.WasPressedThisFrame();
         if (jumpValue)
         {
             interpolated_scale = state ? -Mathf.Abs(interpolated_scale): Mathf.Abs(interpolated_scale);
+        }
+
+        bool attackValue = attackAction.WasPressedThisFrame();
+        if (attackValue && !impacting)
+        {
+            bladeMaterial.SetFloat("_WobbleSpeed", 0);
+            impacting = true;
+            impactFrames = 15;
         }
 
 
@@ -53,11 +74,13 @@ public class LightsaberBladeScript : MonoBehaviour
         cur_scale = Mathf.Clamp(cur_scale, MIN_SCALE, max_scale);
         transform.localScale = new Vector3(init_x, cur_scale, init_z);
 
+        impactFrames -= 1;
+
         state = cur_scale > 0;
 
         blade.SetActive(state);
 
-        
+
 
     }
 
